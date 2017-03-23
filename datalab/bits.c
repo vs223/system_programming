@@ -250,6 +250,7 @@ int howManyBits(int x) {
   
 */
   int sign = (x>>31);
+  int m1, m2, m3, m4, m5;
  /*
     find msb different from sign
   */
@@ -259,7 +260,6 @@ int howManyBits(int x) {
   // get ilog2(x)
   //x= ilog2(x);
 
-    int m1, m2, m3, m4, m5;
   x |= (x >> 1);
   x |= (x >> 2);
   x |= (x >> 4);
@@ -312,11 +312,14 @@ int tmin(void) {
 int isTmax(int x) {
   /*
   !(0x7fffffff ^ x)
-  0x7fffffff = 1<<32 ^ (~0)
-  */
-  int max = 1<<31 ^ (~0);
+  0x7fffffff = 1<<32 ^ (~0)... not allowed..
 
-  return !(max^x);
+  x+x+2 == 0 && x!=-1 
+  x!=-1 
+    !(x^-1)
+  */
+
+  return (!(x+x+2) & !!(x^(~0)));
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
