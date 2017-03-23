@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * <LEE SEUNG JUN>
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -172,7 +172,10 @@ NOTES:
  *   Rating: 1
  */
 int bitAnd(int x, int y) {
-  return 2;
+  /*
+    x&y = ~(~x|~y)
+  */
+  return ~(~x|~y);
 }
 /* 
  * getByte - Extract byte n from word x
@@ -183,7 +186,10 @@ int bitAnd(int x, int y) {
  *   Rating: 2
  */
 int getByte(int x, int n) {
-  return 2;
+/*
+  shift n*4*2 and & with 0xff
+*/
+  return (x >> (n<<3)) & 0xff;
 }
 /* 
  * logicalShift - shift x to the right by n, using a logical shift
@@ -194,7 +200,10 @@ int getByte(int x, int n) {
  *   Rating: 3 
  */
 int logicalShift(int x, int n) {
-  return 2;
+  /*
+  */
+
+  return (x>>n) & ~((1<<31)>>n <<1);
 }
 /* 
  * bang - Compute !x without using !
@@ -204,7 +213,16 @@ int logicalShift(int x, int n) {
  *   Rating: 4 
  */
 int bang(int x) {
-  return 2;
+  /*
+    let me think....
+  */
+  x |= x>>16;
+  x |= x>>8;
+  x |= x>>4;
+  x |= x>>2;
+  x |= x>>1;
+
+  return (~x)&1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -219,7 +237,61 @@ int bang(int x) {
  *  Rating: 4
  */
 int howManyBits(int x) {
-  return 0;
+/*
+  12 = 01100 then -12 = 10100
+  -1 = 1 then 1 = 1
+  -5 = 1011 = 4 
+  298 = 0100101010
+  postive number
+    find max bit and + 1
+  negative number
+    -1 = 0xffffffff
+  find bit which differnt from sign bit
+  
+*/
+  int sign = (x>>31);
+ /*
+    find msb different from sign
+  */
+
+  x = x^sign;
+
+  // get ilog2(x)
+  //x= ilog2(x);
+
+    int m1, m2, m3, m4, m5;
+  x |= (x >> 1);
+  x |= (x >> 2);
+  x |= (x >> 4);
+  x |= (x >> 8);
+  x |= (x >> 16);
+
+  //01 
+  m1 = 0x55 | (0x55 << 8); 
+  m1 = m1 | (m1 << 16);
+
+  //0011 
+  m2 = 0x33 | (0x33 << 8);
+  m2 = m2 | (m2 << 16);
+
+  //00001111 
+  m3 = 0x0f | (0x0f << 8);
+  m3 = m3 | (m3 << 16);
+
+  //0x00ff 
+  m4 = 0xff | (0xff << 16);
+
+  //0x0000ffff 
+  m5 = 0xff | (0xff << 8);
+
+  x = (x & m1) + ((x >> 1) & m1);
+  x = (x & m2) + ((x >> 2) & m2);
+  x = (x & m3) + ((x >> 4) & m3);
+  x = (x & m4) + ((x >> 8) & m4);
+  x = (x & m5) + ((x >> 16) & m5);
+  x = x + ~0;
+  
+  return x + 2;
 }
 /* 
  * tmin - return minimum two's complement integer 
@@ -228,7 +300,7 @@ int howManyBits(int x) {
  *   Rating: 1
  */
 int tmin(void) {
-  return 2;
+  return 1<<31;
 }
 /*
  * isTmax - returns 1 if x is the maximum, two's complement number,
@@ -238,7 +310,13 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 2;
+  /*
+  !(0x7fffffff ^ x)
+  0x7fffffff = 1<<32 ^ (~0)
+  */
+  int max = 1<<31 ^ (~0);
+
+  return !(max^x);
 }
 /* 
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -249,7 +327,17 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    return 2;
+  /*
+  -33 = ~(100001)+1 = 1011111
+  101 = -3
+  when negative,  upper function
+  
+  */
+  int sign=(x>>31)&1;
+  int shifted = x>>n;
+
+
+  return shifted  + ((!!((shifted<<n)^x))&sign);
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -259,7 +347,8 @@ int divpwr2(int x, int n) {
  *   Rating: 3
  */
 int isPositive(int x) {
-  return 2;
+  //!(x>>31)&(!!x)
+  return !(x>>31)^(!x);
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -269,5 +358,36 @@ int isPositive(int x) {
  *   Rating: 4
  */
 int ilog2(int x) {
-  return 2;
+  int m1, m2, m3, m4, m5;
+  x |= (x >> 1);
+  x |= (x >> 2);
+  x |= (x >> 4);
+  x |= (x >> 8);
+  x |= (x >> 16);
+
+  //01 
+  m1 = 0x55 | (0x55 << 8); 
+  m1 = m1 | (m1 << 16);
+
+  //0011 
+  m2 = 0x33 | (0x33 << 8);
+  m2 = m2 | (m2 << 16);
+
+  //00001111 
+  m3 = 0x0f | (0x0f << 8);
+  m3 = m3 | (m3 << 16);
+
+  //0x00ff 
+  m4 = 0xff | (0xff << 16);
+
+  //0x0000ffff 
+  m5 = 0xff | (0xff << 8);
+
+  x = (x & m1) + ((x >> 1) & m1);
+  x = (x & m2) + ((x >> 2) & m2);
+  x = (x & m3) + ((x >> 4) & m3);
+  x = (x & m4) + ((x >> 8) & m4);
+  x = (x & m5) + ((x >> 16) & m5);
+  x = x + ~0;
+  return x; 
 }
