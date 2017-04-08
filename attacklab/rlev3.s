@@ -1,0 +1,11 @@
+movq %rsp, %rdi
+add $32, %rdi
+add %rax, %rdi
+mov $32, %rax
+mov $32, %eax
+add %eax, %esi
+add %ebx, %esi
+add %eax, %ebx
+add $32, %edi
+add $32, %eax
+add $0x37, %al
