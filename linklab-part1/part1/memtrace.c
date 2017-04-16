@@ -49,6 +49,77 @@ void init(void)
   // ...
 }
 
+void *malloc (size_t size)
+{
+    char *error;
+    void *res;
+    /* get address of libc malloc */
+    if (!mallocp) {
+        mallocp = dlsym(RTLD_NEXT, "malloc");
+        if ((error = dlerror()) != NULL) {
+            exit(1);
+	}
+    }
+    n_malloc++;
+    n_allocb+=size;
+    res = mallocp(size);
+    LOG_MALLOC(size, res);
+    return res;
+}
+
+
+void *calloc (size_t nmemb, size_t size)
+{
+    char *error;
+    void *res;
+    if (!callocp) {
+        callocp = dlsym(RTLD_NEXT, "calloc");
+        if ((error = dlerror()) != NULL) {
+            exit(1);
+        }
+    }
+    n_calloc++;
+    n_allocb+=size;
+    res = callocp(nmemb, size);
+    LOG_CALLOC(nmemb, size, res);
+    return res;
+}
+
+void *realloc (void *ptr, size_t size)
+{
+    char *error;
+    void *res;
+    if (!reallocp) {
+        reallocp = dlsym(RTLD_NEXT, "realloc");
+        if ((error = dlerror()) != NULL) {
+            exit(1);
+        }
+    }
+    n_realloc++;
+    n_allocb+=size;
+    res = reallocp(ptr, size);
+    LOG_REALLOC(ptr, size, res);
+    return res;
+}
+
+
+void free (void *ptr)
+{
+    char *error;
+    if (!freep) {
+        freep = dlsym(RTLD_NEXT, "free");
+        if ((error = dlerror()) != NULL) {
+            exit(1);
+        }
+    }
+    n_freeb++;
+    LOG_FREE(ptr);
+    freep(ptr);
+}
+
+
+
+
 //
 // fini - this function is called once when the shared library is unloaded
 //
@@ -57,7 +128,7 @@ void fini(void)
 {
   // ...
 
-  LOG_STATISTICS(0L, 0L, 0L);
+  LOG_STATISTICS(n_allocb, n_allocb/(n_malloc+n_calloc+n_realloc), 0L);
 
   LOG_STOP();
 
@@ -66,3 +137,4 @@ void fini(void)
 }
 
 // ...
+
