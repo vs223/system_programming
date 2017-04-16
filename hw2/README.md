@@ -42,7 +42,7 @@
 
 ## Code
 - hw2-1.c
-```
+```c
 #include <unistd.h>
 #include <fcntl.h> 
 #include <stdio.h>
@@ -81,7 +81,7 @@ int main(){
 }
 ```
 - hw2-2.c
-```
+```c
 #include <unistd.h>
 #include <fcntl.h> 
 #include <stdio.h>
@@ -122,7 +122,7 @@ int main(){
 }
 ```
 - hw2-3.c
-```
+```c
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h> 
@@ -184,7 +184,7 @@ int main () {
 } 
 ```
 - hw2-4.c
-```
+```c
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h> 
@@ -245,8 +245,8 @@ int main () {
 	return 0;
 } 
 ```
--hw2-5.c
-```
+- hw2-5.c
+```c
 #include <unistd.h>
 #include <fcntl.h> 
 #include <stdio.h>
@@ -283,7 +283,7 @@ int main(){
 
 
 - Makefile
-```
+```makefile
 test1: hw2-1.c
 	gcc hw2-1.c -o test1
 
@@ -325,7 +325,7 @@ run5: test5
 	rm -rf dest5.dummy
 ```
 - dummy_maker.py
-```
+```python
 for i in range(1000*1000):
 	for  j in range(10):
 		print(j, end="")
